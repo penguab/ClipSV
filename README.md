@@ -39,3 +39,5 @@ python clipsv.py -b <bam file> -g <genome.mmi>
 
 ## News
 
+6/4/2019: First version released.
+
