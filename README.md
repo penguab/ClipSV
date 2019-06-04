@@ -1,4 +1,4 @@
-# ClipSV (Structural variation detetion based on clipped reads)
+# ClipSV (Structural variation detection with clipped reads)
 
 A software to detect structural variations in human genomes by spliced alignment and local assembly.
 
@@ -10,8 +10,7 @@ Draft date: June. 4, 2019
 
 ## Description
 
-ClipSV was developed to detect structural variations by spliced alignment and local assembly. It primarily depends on clipped reads in short-read sequencing platform. ClipSV was optimized to discover INDELS (20bp-50bp) and structural var
-iations (>=50bp) in germline human genomes.
+ClipSV was developed to detect structural variations by spliced alignment and local assembly. It primarily depends on clipped reads from short-read (optimal 250bp) sequencing platform. ClipSV was optimized to discover INDELS (2bp-50bp) and structural variations (>=50bp) in germline human genomes.
 
 ## System requirements and dependency
 
@@ -32,7 +31,7 @@ export PATH=$PWD/ClipSV/:$PATH
 
 ## Usage
 
-ClipSV needs two files as inputs. The first is a bam file from whole genome sequencing. The second is the genome sequence indexed by minimap2 (To generate index file, use command "minimap2 -d genome.mmi genome.fa").
+ClipSV needs two files as inputs. The first is a bam file from whole genome sequencing. The second is the genome reference indexed by minimap2 (To generate index file, use command "minimap2 -d genome.mmi genome.fa").
 ```
 python clipsv.py -b <bam file> -g <genome.mmi>
 ```
