@@ -1,12 +1,12 @@
 #!/usr/bin/env python	
 import sys,re
 	
-def indel_clips_total(indel_filter,clips_filter_INDEL,out_name):
-	out_file=open(out_name,'w')	
+def combine_SV(clips_filter_SV,overlapping_filter_SV,indel_filter_SV,out_name):
+	out_deletion=open(out_name+'.deletion','w')	
 	out_insertion=open(out_name+'.insertion','w')
 	total=[]
 	info={}
-	for i in [indel_filter,clips_filter_INDEL]:
+	for i in [clips_filter_SV,overlapping_filter_SV,indel_filter_SV]:
 		with open(i) as f:
 			while True:
 				l=f.readline().rstrip()
@@ -18,6 +18,7 @@ def indel_clips_total(indel_filter,clips_filter_INDEL,out_name):
 				info[name]=1
 	total_sorted=sorted(total,key=lambda x: (x[0], int(x[1]),int(x[2])))
 	for x in range(len(total_sorted)):
-		out_file.write(('\t'.join(str(n) for n in total_sorted[x]))+'\n')
-		if total_sorted[x][3]=='INS':
+		if total_sorted[x][3]=='DEL':
+			out_deletion.write(('\t'.join(str(n) for n in total_sorted[x]))+'\n')
+		elif total_sorted[x][3]=='INS':
 			out_insertion.write(('\t'.join(str(n) for n in total_sorted[x]))+'\n')

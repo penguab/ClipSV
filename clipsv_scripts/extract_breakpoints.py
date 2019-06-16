@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import subprocess,sys,re,os
 
-def extract_breakpoints(bam, chromosome, min_insert_size, max_insert_size,genome):
+def extract_breakpoints(chromosome,bam, genome, min_insert_size, max_insert_size,read_length):
 	os.mkdir(chromosome+"_dir")
 	os.chdir(chromosome+"_dir")
 	left_p=re.compile(r'^(\d+)M(\d+[MDI])*(\d+)[SH]$')
@@ -25,6 +25,10 @@ def extract_breakpoints(bam, chromosome, min_insert_size, max_insert_size,genome
 	left_del,right_del={},{}
 	breakpoint={}
 	
+	if int(read_length)<190:
+		softclip_length=5
+	else:
+		softclip_length=10
 	def asc (seq):
 		high=0
 		for i in range(len(seq)):
@@ -79,7 +83,7 @@ def extract_breakpoints(bam, chromosome, min_insert_size, max_insert_size,genome
 			if not m: break
 			if m.group(2)=="I" or m.group(2)=="D":
 				indel=indel_p.search(line[5])
-				if indel and int(m.group(1))>=2:
+				if indel and int(m.group(1))>=1:
 					out_indel.write('\t'.join([line[2],pos,str(int(pos)+1),hp,m.group(1)+':'+m.group(2),'\t'.join(line[0:9]),mc,sa])+'\n')
 			if m.group(2)=="M" or m.group(2)=="D":
 				pos=str(int(pos)+int(m.group(1)))
@@ -89,7 +93,7 @@ def extract_breakpoints(bam, chromosome, min_insert_size, max_insert_size,genome
 			left_match,left_clip,left_seq,right_match,right_clip,right_seq='-','-','-','-','-','-'
 		direction='NA'
 		left=left_p.search(line[5])
-		if left and int(left.group(3))>=10 and int(left.group(1))>=30:
+		if left and int(left.group(3))>=softclip_length:
 			direction='left'
 			left_len=left.group(1)
 			if not seq_m:
@@ -99,7 +103,7 @@ def extract_breakpoints(bam, chromosome, min_insert_size, max_insert_size,genome
 				if abs(int(line[8]))>=int(min_insert_size) and float(left_match)>=0.6 and float(left_clip)>=0.6:
 					out_bam.write(l+'\n')
 		right=right_p.search(line[5])
-		if right and int(right.group(1))>=10 and int(right.group(3))>=30:
+		if right and int(right.group(1))>=softclip_length:
 			direction='right'
 			right_len=right.group(3)
 			if not seq_m:
@@ -145,14 +149,14 @@ def extract_breakpoints(bam, chromosome, min_insert_size, max_insert_size,genome
 				out_inv.write('\t'.join([line[2],str(int(line[3])+int(left_len)),line[7],hp,left_len+':'+direction,'\t'.join(line[0:9]),mc,sa,left_match+":"+left_clip+':'+left_seq,mate,attach_out])+'\n')
 			elif direction=='right':
 				out_inv.write('\t'.join([line[2],str(int(pos)-int(right_len)),line[7],hp,right_len+':'+direction,'\t'.join(line[0:9]),mc,sa,right_match+":"+right_clip+':'+right_seq,mate,attach_out])+'\n')
-		elif line[6]=='=' and abs(int(line[8]))>=745:
+		elif line[6]=='=' and abs(int(line[8]))>=int(max_insert_size):
 			if direction=='NA':
 				out_del.write('\t'.join([line[2],pos,line[7],hp,"0:"+direction,'\t'.join(line[0:9]),mc,sa,'NA',mate,attach_out])+'\n')
 			elif int(line[1])%32<16 and direction=='left':
 				out_del.write('\t'.join([line[2],str(int(line[3])+int(left_len)),line[7],hp,left_len+':'+direction,'\t'.join(line[0:9]),mc,sa,left_match+":"+left_clip+':'+left_seq,mate,attach_out])+'\n')
 			elif int(line[1])%32>=16 and direction=='right':
 				out_del.write('\t'.join([line[2],str(int(pos)-int(right_len)),line[7],hp,right_len+':'+direction,'\t'.join(line[0:9]),mc,sa,right_match+":"+right_clip+':'+right_seq,mate,attach_out])+'\n')
-		elif line[6]=='=' and abs(int(line[8]))<=345:
+		elif line[6]=='=' and abs(int(line[8]))<=int(min_insert_size):
 			if direction=='NA':
 				out_ins.write('\t'.join([line[2],pos,line[7],hp,"0:"+direction,'\t'.join(line[0:9]),mc,sa,'NA',mate,attach_out])+'\n')
 			elif int(line[1])%32<16 and direction=='left':
