@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 import subprocess,re,sys
 from math import sqrt
-def insert_size(bam):
+def insert_size(bam,chr1):
 	def stddev(lst):
 		mean = float(sum(lst)) / len(lst)
 		return mean, sqrt(sum((x - mean)**2 for x in lst) / (len(lst)-1))
-
+	'''
 	test = subprocess.Popen(['samtools','view',bam],stdout=subprocess.PIPE)
 	while True:
 		l= test.stdout.readline().decode('utf-8').rstrip()
@@ -13,6 +13,7 @@ def insert_size(bam):
 		line=l.split('\t')
 		chr1=line[2]
 		break
+	'''
 	para1=chr1+':20000000-21000000'
 	size=[]
 	number=0
@@ -40,5 +41,5 @@ def insert_size(bam):
 	return min_insert_size,max_insert_size,int(length),fold
 	
 if __name__=="__main__":
-	min_insert_size,max_insert_size,length,coverage=insert_size(sys.argv[1])
+	min_insert_size,max_insert_size,length,coverage=insert_size(sys.argv[1],sys.argv[2])
 	print(min_insert_size,max_insert_size,length,coverage)

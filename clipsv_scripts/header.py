@@ -15,5 +15,13 @@ def header(bam):
 			continue
 		name=line[1].split(':')[1]
 		chromosomes.append(name)
-	return chromosomes
+	chro_filter=[]
+	for i in range(len(chromosomes)):
+		test=subprocess.Popen(['samtools','view',bam,i], stdout=subprocess.PIPE)
+		while True:
+			l= test.stdout.readline().decode('utf-8').rstrip()
+			if not l: break
+			chro_filter.append(i)
+			break
+	return chro_filter
 
