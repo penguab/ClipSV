@@ -33,7 +33,7 @@ from clipsv_scripts.header import header
 chromosomes=header(bam)
 
 from clipsv_scripts.insert_size import insert_size
-min_insert_size,max_insert_size,read_length,fold=insert_size(bam,chromosomes[0],chromosomes[1],chromosomes[2])
+min_insert_size,max_insert_size,read_length,fold=insert_size(bam)
 
 try:
 	fold=depth
