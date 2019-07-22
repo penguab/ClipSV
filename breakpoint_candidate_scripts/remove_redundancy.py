@@ -14,6 +14,9 @@ def remove_redundancy(clips_DEL):
 			else:
 				length_match=0
 			if line[3]==region[3] and int(line[1])-int(region[1])<=50 and length_match==1:
+				if int(line[4])>int(region[4]):
+					del para2[i]
+					para2.append(para1)
 				inside=1
 				break
 			elif line[3]==region[3] and int(line[1])-int(region[1])<=50 and length_match==0:

@@ -6,7 +6,7 @@ def usage():
 	sys.exit('Usage:\npython clipsv.py -b <bam file> -g <genome.mmi>\n')
 
 try:
-	opts, args = getopt.getopt(sys.argv[1:], "b:g:h",["help"])
+	opts, args = getopt.getopt(sys.argv[1:], "b:g:d:h",["help"])
 except getopt.GetoptError as err:
 	print(err)
 	usage()
@@ -19,6 +19,8 @@ for o, a in opts:
 		bam=os.path.abspath(a)
 	elif o =="-g":
 		genome=os.path.abspath(a)
+	elif o =="-d":
+		depth=int(a)
 	elif o in ("-h","--help"):
 		usage()
 
@@ -32,6 +34,11 @@ chromosomes=header(bam)
 
 from clipsv_scripts.insert_size import insert_size
 min_insert_size,max_insert_size,read_length,fold=insert_size(bam,chromosomes[0],chromosomes[1],chromosomes[2])
+
+try:
+	fold=depth
+except NameError:
+	pass
 
 from clipsv_scripts.extract_breakpoints import extract_breakpoints
 processes_1 = [mp.Process(target=extract_breakpoints, args=(x,bam,genome,min_insert_size,max_insert_size,read_length)) for x in chromosomes]

@@ -138,9 +138,9 @@ def extract_breakpoints(chromosome,bam, genome, min_insert_size, max_insert_size
 			out_split.write('\t'.join([line[2],str(int(pos)-int(right_len)),str(int(pos)-int(right_len)+1),hp,right_len+':'+direction,'\t'.join(line[0:9]),mc,sa,right_match+":"+right_clip+':'+right_seq,mate,attach_out])+'\n')
 		if int(line[1])>=2048 or int(line[1])%512>=256 or int(line[4])<20:
 			continue
-		if direction=='left':
+		if direction=='left' and int(left.group(3))>=10:
 			out_break.write('\t'.join([line[2],str(int(line[3])+int(left_len)),str(int(line[3])+int(left_len)+1),hp,left_len+':'+direction,'\t'.join(line[0:9]),mc,sa,left_match+":"+left_clip+':'+left_seq,mate,attach_out])+'\n')
-		elif direction=='right':
+		elif direction=='right' and int(right.group(1))>=10:
 			out_break.write('\t'.join([line[2],str(int(pos)-int(right_len)),str(int(pos)-int(right_len)+1),hp,right_len+':'+direction,'\t'.join(line[0:9]),mc,sa,right_match+":"+right_clip+':'+right_seq,mate,attach_out])+'\n')
 		if line[6]=='=' and ((int(line[1])%64>=32 and int(line[1])%32>=16) or (int(line[1])%64<32 and int(line[1])%32<16)):
 			if direction=='NA':

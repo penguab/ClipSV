@@ -26,13 +26,13 @@ def event_sv(bam):
 				if not m: break
 				if int(m.group(1))>=30 and (m.group(2)=="D" or m.group(2)=="N" or m.group(2)=="I") and (int(pos)-int(start)>=-100 and int(pos)-int(end)<=100):
 					if (m.group(2)=="D" or  m.group(2)=="N") and event=="DEL" and int(m.group(1))/int(length)>=0.5 and int(m.group(1))/int(length)<=2:
-						out_file.write("\t".join([chro,pos,str(int(pos)+int(m.group(1))+1),"DEL",m.group(1),l])+"\n")
+						out_file.write("\t".join([chro,start,str(int(start)+int(m.group(1))+1),"DEL",m.group(1),l])+"\n")
 					elif m.group(2)=="I" and event=="INS" :
-						out_file.write("\t".join([chro,pos,str(int(pos)+1),"INS",m.group(1),l])+"\n")
+						out_file.write("\t".join([chro,start,str(int(start)+1),"INS",m.group(1),l])+"\n")
 					elif (m.group(2)=="D" or  m.group(2)=="N") and event=="BND":
-						out_file.write("\t".join([chro,pos,str(int(pos)+int(m.group(1))+1),"DEL",m.group(1),l])+"\n")
+						out_file.write("\t".join([chro,start,str(int(start)+int(m.group(1))+1),"DEL",m.group(1),l])+"\n")
 					elif m.group(2)=="I" and event=="BND":
-						out_file.write("\t".join([chro,pos,str(int(pos)+1),"INS",m.group(1),l])+"\n")
+						out_file.write("\t".join([chro,start,str(int(start)+1),"INS",m.group(1),l])+"\n")
 					mark=1
 				if m.group(2)=="M" or m.group(2)=="D":
 					pos=str(int(pos)+int(m.group(1)))
@@ -43,9 +43,9 @@ def event_sv(bam):
 			if int(line[3])-int(end)>100 or int(pos)-int(start)<-100:
 				out_file.write ("\t".join(["-","-","-","no_event","-",l])+"\n")
 			elif p and int(p.group(1))>=30 and (int(line[3])-int(start)>=-100 and int(line[3])-int(end)<=100):
-				out_file.write ("\t".join([line[2],line[3],str(int(line[3])+1),"right_boundary","-",l])+"\n")
+				out_file.write ("\t".join([chro,start,str(int(start)+1),"right_boundary","-",l])+"\n")
 			elif q and int(q.group(1))>=30 and (int(pos)-int(start)>=-100 and int(pos)-int(end)<=100):
-				out_file.write ("\t".join([line[2],pos,str(int(pos)+1),"left_boundary","-",l])+"\n")
+				out_file.write ("\t".join([chro,start,str(int(start)+1),"left_boundary","-",l])+"\n")
 			else:
 				out_file.write ("\t".join(["-","-","-","wrong_assembly","-",l])+"\n")
 	
