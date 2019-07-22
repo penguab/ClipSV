@@ -33,8 +33,10 @@ def insert_size(bam,chr1):
 			if m:
 				if int(length)< int(m.group(1)):
 					length=m.group(1)
-	coverage=int(number*int(length)/3000000)
+	coverage=int(number*int(length)/1000000)
 	fold=int(round(float(coverage)/10))
+	if fold<3:
+		fold=3
 	mean,sd=stddev(size)
 	min_insert_size=max(int(mean-200),int(mean-int(sd)))
 	max_insert_size=min(int(mean+200),int(mean+int(sd)))
