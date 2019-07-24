@@ -3,7 +3,11 @@ import subprocess,sys,re,getopt,os
 import multiprocessing as mp
 
 def usage():
-	sys.exit('Usage:\npython clipsv.py -b <bam file> -g <genome.mmi>\n')
+	sys.exit('\nUsage:\nexport PATH=$PATH:ClipSV_install_directory/\nclipsv.py -b <bam file> -g <genome.mmi>\n')
+
+if sys.version_info[0] < 3:
+	print('\nPlease Use Python3 !!\n')
+	usage()
 
 try:
 	opts, args = getopt.getopt(sys.argv[1:], "b:g:d:h",["help"])
