@@ -34,6 +34,12 @@ def vcf(chromosome):
 		if not l: break
 		SV.append(l.split("\t")+["INS","-"])
 	f4.close()
+	f5=open("combined_SV.insertion.unique",'r')
+	while True:
+		l=f5.readline().rstrip()
+		if not l: break
+		SV.append(l.split("\t"))
+	f5.close()
 	SV_sort=sorted(SV,key=lambda x: (x[0], int(x[1])))
 	for y in range(len(SV_sort)):
 		if SV_sort[y][3]=="DEL":

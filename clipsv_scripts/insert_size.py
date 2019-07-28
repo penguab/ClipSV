@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import subprocess,re,sys
+import subprocess,re,sys,warnings
 from math import sqrt
 def insert_size(bam,chr1):
 	def stddev(lst):
@@ -36,7 +36,9 @@ def insert_size(bam,chr1):
 	coverage=int(number*int(length)/1000000)
 	fold=int(round(float(coverage)/10))
 	if fold<3:
-		fold=3
+		warnings.warn('Warnings: Coverage was estimated lower than 30. May cause more false positives!\n')
+	if fold<2:
+		sys.exit('\nCoverage was estimated lower than 20. Exist!\n')
 	mean,sd=stddev(size)
 	min_insert_size=max(int(mean-200),int(mean-int(sd)))
 	max_insert_size=min(int(mean+200),int(mean+int(sd)))
