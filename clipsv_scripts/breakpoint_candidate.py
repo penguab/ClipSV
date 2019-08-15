@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import subprocess,sys,os
 
-def breakpoint_candidate(chromosome,bam,genome,fold,min_insert_size,max_insert_size):
+def breakpoint_candidate(chromosome,bam,genome,fold,min_insert_size,max_insert_size,read_length):
 	root_path=os.getcwd()
 	os.chdir(chromosome+"_dir")
 	path=os.getcwd()
@@ -43,10 +43,12 @@ def breakpoint_candidate(chromosome,bam,genome,fold,min_insert_size,max_insert_s
 	large_insertion_sort(translocation)
 	merge_large_insertion(translocation+".sort",int(fold))
 	from breakpoint_candidate_scripts.insertion_total import insertion_total
-	insertion_total("combined_SV.insertion",split+".duplication.merge",large_insertion+".sort.merge",translocation+".sort.merge")
+	insertion_total("combined_SV.insertion.unique",split+".duplication.merge",large_insertion+".sort.merge",translocation+".sort.merge")
 	breakpoint_outINDEL("insertion_total","combined_INDEL","insertion_total.outINDEL")
+	breakpoint_outINDEL(breakpoint+".outINDEL.merge","insertion_total.outINDEL",breakpoint+".outINDEL.merge.outINS")
+	breakpoint_outINDEL(breakpoint+".outINDEL.merge.outINS","combined_SV.deletion.unique",breakpoint+".outINDEL.merge.outINS.outDEL")
 	from breakpoint_candidate_scripts.assembly_reads import assembly_reads
-	assembly_reads(chromosome,breakpoint+".outINDEL.merge",bam)
+	assembly_reads(chromosome,breakpoint+".outINDEL.merge.outINS.outDEL",bam)
 	from breakpoint_candidate_scripts.assembly_partition import assembly_partition
 	assembly_partition(chromosome+"_reads_name",bam)
 	from breakpoint_candidate_scripts.assembly_velvet import assembly_velvet
@@ -54,7 +56,7 @@ def breakpoint_candidate(chromosome,bam,genome,fold,min_insert_size,max_insert_s
 	from breakpoint_candidate_scripts.contig_pool import contig_pool
 	contig_pool(path)
 	devnull=open(os.devnull, 'w')
-	contig_command=subprocess.Popen(['minimap2','-ax','splice',genome,'contig_all.fa'], stdout=subprocess.PIPE,stderr=devnull)
+	contig_command=subprocess.Popen(['minimap2','-a',genome,'contig_all.fa'], stdout=subprocess.PIPE,stderr=devnull)
 	contig_command_out_file=open("contig_all.minimap.splice.sam",'w')
 	contig_command_out_file.write(contig_command.stdout.read().decode('utf-8'))	
 	contig_command_out_file.close()
@@ -62,8 +64,20 @@ def breakpoint_candidate(chromosome,bam,genome,fold,min_insert_size,max_insert_s
 	event_sv("contig_all.minimap.splice.sam")
 	from breakpoint_candidate_scripts.event_sv_INS import event_sv_INS
 	event_sv_INS("contig_all.minimap.splice.sam.sv")
-	breakpoint_outINDEL("insertion_total.outINDEL","contig_all.minimap.splice.sam.sv.INS","insertion_total.unassemblied")
-	merge_bed("insertion_total.unassemblied")
+	from breakpoint_candidate_scripts.split_inversion import split_inversion
+	split_inversion(split)
+	from breakpoint_candidate_scripts.merge_split_inversion import merge_split_inversion
+	merge_split_inversion(split+".inversion",fold)
+	from breakpoint_candidate_scripts.inversion_pair import inversion_pair
+	inversion_pair(chromosome+"_inversion",max_insert_size,read_length)
+	from breakpoint_candidate_scripts.merge_inversion_pair import merge_inversion_pair
+	merge_inversion_pair(chromosome+"_inversion.pair",fold)
+	from breakpoint_candidate_scripts.inversion_total import inversion_total
+	inversion_total(chromosome+"_inversion.pair.merge",chromosome+"_split.inversion.merge")
+	from breakpoint_candidate_scripts.translocation_site import translocation_site
+	translocation_site(chromosome+"_translocation.sort")
+	from breakpoint_candidate_scripts.merge_translocation_site import merge_translocation_site
+	merge_translocation_site(chromosome+"_translocation.sort.site",fold)
 	from breakpoint_candidate_scripts.vcf import vcf
 	vcf(chromosome)
 	from breakpoint_candidate_scripts.genotype import genotype

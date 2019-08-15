@@ -56,7 +56,7 @@ for x in chromosomes:
 	spliced_alignment(x,bam,genome,fold)
 
 from clipsv_scripts.breakpoint_candidate import breakpoint_candidate
-processes_2 = [mp.Process(target=breakpoint_candidate, args=(x,bam,genome,fold,min_insert_size,max_insert_size)) for x in chromosomes]
+processes_2 = [mp.Process(target=breakpoint_candidate, args=(x,bam,genome,fold,min_insert_size,max_insert_size,read_length)) for x in chromosomes]
 for p2 in processes_2:
         p2.start()
 for p2 in processes_2:

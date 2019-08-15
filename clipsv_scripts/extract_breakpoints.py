@@ -49,8 +49,11 @@ def extract_breakpoints(chromosome,bam, genome, min_insert_size, max_insert_size
 		if l[0]=='@':
 			out_bam.write(l+'\n')
 			continue
-		#XA=XA_p.search(l)
-		#if XA: continue
+		XA=XA_p.search(l)
+		if XA:
+			xa=XA.group(0)
+		else:
+			xa='NA'
 		MC=MC_p.search(l)
 		if MC:
 			mc=MC.group(0)
@@ -119,7 +122,7 @@ def extract_breakpoints(chromosome,bam, genome, min_insert_size, max_insert_size
 		attach=[0,0,0,0,0,0]
 		if direction=='left' or direction=='right':
 			attach=merge(attach,[1,0,0,0,0,0])
-		if SA:
+		if SA or XA:
 			attach=merge(attach,[0,1,0,0,0,0])
 		if line[6]=='=' and abs(int(line[8]))>=int(max_insert_size):
 			attach=merge(attach,[0,0,1,0,0,0])
@@ -136,13 +139,17 @@ def extract_breakpoints(chromosome,bam, genome, min_insert_size, max_insert_size
 			out_split.write('\t'.join([line[2],str(int(line[3])+int(left_len)),str(int(line[3])+int(left_len)+1),hp,left_len+':'+direction,'\t'.join(line[0:9]),mc,sa,left_match+":"+left_clip+':'+left_seq,mate,attach_out])+'\n')
 		elif SA and direction=='right':
 			out_split.write('\t'.join([line[2],str(int(pos)-int(right_len)),str(int(pos)-int(right_len)+1),hp,right_len+':'+direction,'\t'.join(line[0:9]),mc,sa,right_match+":"+right_clip+':'+right_seq,mate,attach_out])+'\n')
-		if int(line[1])>=2048 or int(line[1])%512>=256 or int(line[4])<20:
-			continue
+		elif XA and direction=='left':
+			out_split.write('\t'.join([line[2],str(int(line[3])+int(left_len)),str(int(line[3])+int(left_len)+1),hp,left_len+':'+direction,'\t'.join(line[0:9]),mc,xa,left_match+":"+left_clip+':'+left_seq,mate,attach_out])+'\n')
+		elif XA and direction=='right':
+			out_split.write('\t'.join([line[2],str(int(pos)-int(right_len)),str(int(pos)-int(right_len)+1),hp,right_len+':'+direction,'\t'.join(line[0:9]),mc,xa,right_match+":"+right_clip+':'+right_seq,mate,attach_out])+'\n')
+		#if int(line[1])>=2048 or int(line[1])%512>=256 or int(line[4])<20:
+		#	continue
 		if direction=='left' and int(left.group(3))>=10:
 			out_break.write('\t'.join([line[2],str(int(line[3])+int(left_len)),str(int(line[3])+int(left_len)+1),hp,left_len+':'+direction,'\t'.join(line[0:9]),mc,sa,left_match+":"+left_clip+':'+left_seq,mate,attach_out])+'\n')
 		elif direction=='right' and int(right.group(1))>=10:
 			out_break.write('\t'.join([line[2],str(int(pos)-int(right_len)),str(int(pos)-int(right_len)+1),hp,right_len+':'+direction,'\t'.join(line[0:9]),mc,sa,right_match+":"+right_clip+':'+right_seq,mate,attach_out])+'\n')
-		if line[6]=='=' and ((int(line[1])%64>=32 and int(line[1])%32>=16) or (int(line[1])%64<32 and int(line[1])%32<16)):
+		if line[6]=='=' and ((int(line[1])%64>=32 and int(line[1])%32>=16) or (int(line[1])%64<32 and int(line[1])%32<16)) and int(line[1])%16<8:
 			if direction=='NA':
 				out_inv.write('\t'.join([line[2],pos,line[7],hp,"0:"+direction,'\t'.join(line[0:9]),mc,sa,'NA',mate,attach_out])+'\n')
 			elif direction=='left':
@@ -170,7 +177,7 @@ def extract_breakpoints(chromosome,bam, genome, min_insert_size, max_insert_size
 				out_trans.write('\t'.join([line[2],str(int(line[3])+int(left_len)),line[6]+':'+line[7],hp,left_len+':'+direction,'\t'.join(line[0:9]),mc,sa,left_match+":"+left_clip+':'+left_seq,mate,attach_out])+'\n')
 			elif int(line[1])%32>=16 and direction=='right':
 				out_trans.write('\t'.join([line[2],str(int(pos)-int(right_len)),line[6]+':'+line[7],hp,right_len+':'+direction,'\t'.join(line[0:9]),mc,sa,right_match+":"+right_clip+':'+right_seq,mate,attach_out])+'\n')
-		elif line[6]!='=' and hs_m:
+		elif (line[6]!='=' and hs_m) or (int(line[1])%16>=8):
 			if direction=='NA':
 				out_large_ins.write('\t'.join([line[2],pos,line[6]+':'+line[7],hp,"0:"+direction,'\t'.join(line[0:9]),mc,sa,'NA',mate,attach_out])+'\n')
 			elif int(line[1])%32<16 and direction=='left':

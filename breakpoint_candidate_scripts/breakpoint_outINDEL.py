@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import subprocess	
+import subprocess,sys	
 def breakpoint_outINDEL(file1,file2,out):
 	total=[]
 	out_file=open(out,'w')
@@ -13,4 +13,6 @@ def breakpoint_outINDEL(file1,file2,out):
 	for y in range(len(total_sort)):
 		out_file.write(("\t".join(str(n) for n in total_sort[y]))+"\n")
 
+if __name__=='__main__':
+	breakpoint_outINDEL(sys.argv[1],sys.argv[2],sys.argv[3])
 

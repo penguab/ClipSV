@@ -49,4 +49,7 @@ def event_sv(bam):
 			else:
 				out_file.write ("\t".join(["-","-","-","wrong_assembly","-",l])+"\n")
 	
+
+if __name__=='__main__':
+	event_sv(sys.argv[1])
 	
