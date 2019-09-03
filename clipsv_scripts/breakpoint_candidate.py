@@ -34,18 +34,37 @@ def breakpoint_candidate(chromosome,bam,genome,fold,min_insert_size,max_insert_s
 	split_duplication(split)
 	from breakpoint_candidate_scripts.merge_split_duplication import merge_split_duplication
 	merge_split_duplication(split+".duplication",int(fold))
+	from breakpoint_candidate_scripts.split_inversion import split_inversion
+	split_inversion(split)
+	from breakpoint_candidate_scripts.merge_split_inversion import merge_split_inversion
+	merge_split_inversion(split+".inversion",fold)
+	from breakpoint_candidate_scripts.inversion_pair import inversion_pair
+	inversion_pair(chromosome+"_inversion",max_insert_size,read_length)
+	from breakpoint_candidate_scripts.merge_inversion_pair import merge_inversion_pair
+	merge_inversion_pair(chromosome+"_inversion.pair",fold)
+	from breakpoint_candidate_scripts.inversion_total import inversion_total
+	inversion_total(chromosome+"_inversion.pair.merge",chromosome+"_split.inversion.merge")
+	translocation=chromosome+"_translocation"
 	from breakpoint_candidate_scripts.large_insertion_sort import large_insertion_sort
+	large_insertion_sort(translocation)
+	from breakpoint_candidate_scripts.merge_large_insertion import merge_large_insertion
+	merge_large_insertion(translocation+".sort",int(fold))
+	from breakpoint_candidate_scripts.translocation_site import translocation_site
+	translocation_site(chromosome+"_translocation.sort")
+	from breakpoint_candidate_scripts.merge_translocation_site import merge_translocation_site
+	merge_translocation_site(chromosome+"_translocation.sort.site",fold)
+	from breakpoint_candidate_scripts.inversion_translocation_breakpoint import inversion_translocation_breakpoint
+	inversion_translocation_breakpoint()
 	large_insertion=chromosome+"_large_insertion"
 	large_insertion_sort(large_insertion)
-	from breakpoint_candidate_scripts.merge_large_insertion import merge_large_insertion
 	merge_large_insertion(large_insertion+".sort",int(fold))
-	translocation=chromosome+"_translocation"
-	large_insertion_sort(translocation)
-	merge_large_insertion(translocation+".sort",int(fold))
+	breakpoint_outINDEL(chromosome+"_large_insertion.sort.merge","inversion_translocation.breakpoint","large_insertion.outInvTrans")
+	breakpoint_outINDEL(chromosome+"_translocation.sort.merge","inversion_translocation.breakpoint","translocation.outInvTrans")
 	from breakpoint_candidate_scripts.insertion_total import insertion_total
-	insertion_total("combined_SV.insertion.unique",split+".duplication.merge",large_insertion+".sort.merge",translocation+".sort.merge")
+	insertion_total("combined_SV.insertion.unique",split+".duplication.merge","large_insertion.outInvTrans","translocation.outInvTrans")
 	breakpoint_outINDEL("insertion_total","combined_INDEL","insertion_total.outINDEL")
-	breakpoint_outINDEL(breakpoint+".outINDEL.merge","insertion_total.outINDEL",breakpoint+".outINDEL.merge.outINS")
+	breakpoint_outINDEL(breakpoint+".outINDEL.merge","inversion_translocation.breakpoint",breakpoint+".outINDEL.merge.outInvTrans")
+	breakpoint_outINDEL(breakpoint+".outINDEL.merge.outInvTrans","insertion_total.outINDEL",breakpoint+".outINDEL.merge.outINS")
 	breakpoint_outINDEL(breakpoint+".outINDEL.merge.outINS","combined_SV.deletion.unique",breakpoint+".outINDEL.merge.outINS.outDEL")
 	from breakpoint_candidate_scripts.assembly_reads import assembly_reads
 	assembly_reads(chromosome,breakpoint+".outINDEL.merge.outINS.outDEL",bam)
@@ -64,20 +83,6 @@ def breakpoint_candidate(chromosome,bam,genome,fold,min_insert_size,max_insert_s
 	event_sv("contig_all.minimap.splice.sam")
 	from breakpoint_candidate_scripts.event_sv_INS import event_sv_INS
 	event_sv_INS("contig_all.minimap.splice.sam.sv")
-	from breakpoint_candidate_scripts.split_inversion import split_inversion
-	split_inversion(split)
-	from breakpoint_candidate_scripts.merge_split_inversion import merge_split_inversion
-	merge_split_inversion(split+".inversion",fold)
-	from breakpoint_candidate_scripts.inversion_pair import inversion_pair
-	inversion_pair(chromosome+"_inversion",max_insert_size,read_length)
-	from breakpoint_candidate_scripts.merge_inversion_pair import merge_inversion_pair
-	merge_inversion_pair(chromosome+"_inversion.pair",fold)
-	from breakpoint_candidate_scripts.inversion_total import inversion_total
-	inversion_total(chromosome+"_inversion.pair.merge",chromosome+"_split.inversion.merge")
-	from breakpoint_candidate_scripts.translocation_site import translocation_site
-	translocation_site(chromosome+"_translocation.sort")
-	from breakpoint_candidate_scripts.merge_translocation_site import merge_translocation_site
-	merge_translocation_site(chromosome+"_translocation.sort.site",fold)
 	from breakpoint_candidate_scripts.vcf import vcf
 	vcf(chromosome)
 	from breakpoint_candidate_scripts.genotype import genotype

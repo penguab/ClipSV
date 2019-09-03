@@ -7,7 +7,7 @@ def merge_breakpoint(breakpoint):
 		line=para1.split('\t')
 		region=para2.split('\t')
 		match=0
-		if line[0]==region[0] and int(line[2])-int(region[2])<=20:
+		if line[0]==region[0] and int(line[2])-int(region[2])<=10:
 			if line[-2]!='-':
 				if region[-2]=='-':
 					region[-2]=line[-2]

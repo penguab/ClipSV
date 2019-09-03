@@ -13,7 +13,8 @@ def genotype(name,bam,min_insert_size,max_insert_size):
 			line=l.split("\t")
 			del_p=re.search(r'SVTYPE=DEL',line[7])
 			cov_para=line[0]+":"+str(int(line[1])-100)+"-"+str(int(line[1])-50)
-			cov_command= subprocess.Popen(['samtools','depth',bam,'-r',cov_para], stdout=subprocess.PIPE)
+			devnull=open(os.devnull, 'w')
+			cov_command= subprocess.Popen(['samtools','depth',bam,'-r',cov_para], stdout=subprocess.PIPE,stderr=devnull)
 			cov_total,cov_number=0,0
 			while True:
 				sam= cov_command.stdout.readline().decode('utf-8').rstrip()
@@ -27,7 +28,7 @@ def genotype(name,bam,min_insert_size,max_insert_size):
 				coverage=float(cov_total)/cov_number
 			cov_command.communicate()
 			para=line[0]+":"+str(int(line[1])-20)+"-"+str(int(line[1])+80)
-			command= subprocess.Popen(['samtools','view',bam,para], stdout=subprocess.PIPE)
+			command= subprocess.Popen(['samtools','view',bam,para], stdout=subprocess.PIPE,stderr=devnull)
 			clip=0
 			normal=0
 			while True:

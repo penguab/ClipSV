@@ -20,6 +20,9 @@ def event_sv(bam):
 			if line[2]!=chro or abs(int(line[3])-int(start))>=5000 or  abs(int(line[3])-int(end))>=5000: continue
 			pos= line[3]
 			cigar= line[5]
+			cont=cigar.split('M')
+			if len(cont)>5:
+				 continue
 			mark=0
 			while True:
 				m=re.match(r'^(\d+)([A-Za-z])',cigar)

@@ -41,7 +41,7 @@ def insert_size(bam,chr1):
 		sys.exit('\nCoverage was estimated lower than 20. Exist!\n')
 	mean,sd=stddev(size)
 	min_insert_size=max(int(mean-200),int(mean-int(sd)))
-	max_insert_size=min(int(mean+200),int(mean+int(sd)))
+	max_insert_size=min(int(mean+300),int(mean+int(sd)))
 	return min_insert_size,max_insert_size,int(length),fold
 	
 if __name__=="__main__":

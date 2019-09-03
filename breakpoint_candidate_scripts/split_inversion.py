@@ -10,10 +10,14 @@ def split_inversion(split):
 			l= f.readline().rstrip()
 			if not l: break
 			line= l.split('\t')
-			if int(line[9])<0:
+			if int(line[9])<20:
+				continue
+			if line[11]!='=':
 				continue
 			if line[15][0:2]=="SA":
 				sa=line[15].split(",")
+				if sa[0][5:]!=line[7] or int(sa[4])<50:
+					continue
 				m=re.search(r'^\d+[SH](\d+)M\d+[SH]$',sa[3])
 				if m:
 					if (int(line[6])%32 >=16 and sa[2]=="+") or (int(line[6])%32 <16 and sa[2]=="-"):

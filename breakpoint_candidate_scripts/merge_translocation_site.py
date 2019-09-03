@@ -26,12 +26,12 @@ def merge_translocation_site(translocation,fold):
 		elif inside==0 and overlap==0:
 			for x in range(len(para2)):
 				out=para2[x].split('\t')
-				if int(out[4])>=int(fold):
+				if int(out[4])>=int(fold)-1:
 					total=0
 					for y in range(len(discordant)):
 						if out[0]==discordant[y][0] and out[2]==discordant[y][2] and abs(int(out[1])-int(discordant[y][1]))<=1000 and abs(int(out[3])-int(discordant[y][3]))<=1000:
 							total=total+1
-					if total>=int(fold):
+					if int(out[4])+total>=2*(int(fold)-1):
 						out_file.write("\t".join([out[0],out[1],str(int(out[1])+1),"TRANS",out[2]+":"+out[3],out[4],str(total)])+"\n")
 			para2=[para1]
 		return para2
@@ -68,21 +68,21 @@ def merge_translocation_site(translocation,fold):
 	
 	for x in range(len(left)):
 		out=left[x].split('\t')
-		if int(out[4])>=int(fold):
+		if int(out[4])>=int(fold)-1:
 			total=0
 			for y in range(len(discordant)):
 				if out[0]==discordant[y][0] and out[2]==discordant[y][2] and abs(int(out[1])-int(discordant[y][1]))<=1000 and abs(int(out[3])-int(discordant[y][3]))<=1000:
 					total=total+1
-			if total>=int(fold):
+			if int(out[4])+total>=2*(int(fold)-1):
 				out_file.write("\t".join([out[0],out[1],str(int(out[1])+1),"TRANS",out[2]+":"+out[3],out[4],str(total)])+"\n")
 	for x in range(len(right)):
 		out=right[x].split('\t')
-		if int(out[4])>=int(fold):
+		if int(out[4])>=int(fold)-1:
 			total=0
 			for y in range(len(discordant)):
 				if out[0]==discordant[y][0] and out[2]==discordant[y][2] and abs(int(out[1])-int(discordant[y][1]))<=1000 and abs(int(out[3])-int(discordant[y][3]))<=1000:
 					total=total+1
-			if total>=int(fold):
+			if int(out[4])+total>=2*(int(fold)-1):
 				out_file.write("\t".join([out[0],out[1],str(int(out[1])+1),"TRANS",out[2]+":"+out[3],out[4],str(total)])+"\n")
 
 if __name__=="__main__":

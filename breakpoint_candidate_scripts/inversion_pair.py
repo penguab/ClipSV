@@ -9,6 +9,8 @@ def inversion_pair(inversion,size,length):
 			l= f.readline().rstrip()
 			if not l: break
 			line= l.split('\t')
+			if int(line[9])<20:
+				continue
 			if line[4].split(':')[1]=='left' and int(line[12])-int(line[8])>int(size):
 				end=str(int(line[8])+int(size)+int(line[12])-int(line[1]))
 				total.append([line[0],line[1],end,line[3],"left",str(int(end)-int(line[1]))])

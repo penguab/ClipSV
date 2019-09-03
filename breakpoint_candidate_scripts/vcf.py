@@ -28,7 +28,7 @@ def vcf(chromosome):
 		if not l: break
 		SV.append(l.split("\t"))
 	f3.close()
-	f5=open("combined_SV.insertion.unique",'r')
+	f5=open("insertion_total",'r')
 	while True:
 		l=f5.readline().rstrip()
 		if not l: break
