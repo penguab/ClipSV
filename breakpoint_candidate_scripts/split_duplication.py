@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+import sys
+
 def split_duplication(split):
 	out_file=open(split+".duplication","w")
 	total=[]
@@ -8,7 +10,7 @@ def split_duplication(split):
 			l= f.readline().rstrip()
 			if not l: break
 			line= l.split('\t')
-			if int(line[9])<20:
+			if int(line[9])<50 or line[11]!='=':
 				continue
 			if int(line[6])%256>=128:
 				read="R2"
@@ -31,12 +33,12 @@ def split_duplication(split):
 				left[name]=l
 	total_filter=[]
 	for i in total:
-		if int(i[2])-int(i[1])<=-40:
+		if int(i[2])-int(i[1])<=-5:
 			total_filter.append([i[0],i[2],i[1]]+i[3:])
 	total_sorted=sorted(total_filter,key=lambda x: (x[0], int(x[1]),int(x[2])))
 	for x in range(len(total_sorted)):
 		out_file.write(('\t'.join(str(n) for n in total_sorted[x]))+'\n')
 	
-	
-	
+if __name__=='__main__':	
+	split_duplication(sys.argv[1])
 	

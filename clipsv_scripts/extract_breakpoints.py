@@ -18,7 +18,6 @@ def extract_breakpoints(chromosome,bam, genome, min_insert_size, max_insert_size
 	out_split=open(chromosome+"_split","w")
 	out_break=open(chromosome+"_breakpoint","w")
 	out_del=open(chromosome+"_deletion","w")
-	out_ins=open(chromosome+"_insertion","w")
 	out_large_ins=open(chromosome+"_large_insertion","w")
 	out_trans=open(chromosome+"_translocation","w")
 	out_inv=open(chromosome+"_inversion","w")
@@ -74,8 +73,9 @@ def extract_breakpoints(chromosome,bam, genome, min_insert_size, max_insert_size
 		else:
 			xa='NA'
 		mate='0'
-		mate_m=re.search(r'[SH]',mc)
-		if mate_m: mate='1'
+		mate_m=re.search(r'[DI]',mc)
+		if mate_m:
+			mate='1'
 		hp='hp1'
 		if int(line[1])%2048 >=1024 or int(line[1])%8 >=4 or int(line[4])<10: continue
 		if int(line[1])%256 >=128:

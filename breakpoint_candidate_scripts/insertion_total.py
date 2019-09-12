@@ -1,10 +1,10 @@
 #!/usr/bin/env python	
 import sys,re
 	
-def insertion_total(clips_insertion,split_duplication,large_insertion,translocation):
+def insertion_total(clips_insertion,large_insertion,translocation):
 	out_file=open('insertion_total','w')	
 	total=[]
-	for i in [clips_insertion,split_duplication,large_insertion,translocation]:
+	for i in [clips_insertion,large_insertion,translocation]:
 		with open(i) as f:
 			while True:
 				l=f.readline().rstrip()
@@ -12,8 +12,6 @@ def insertion_total(clips_insertion,split_duplication,large_insertion,translocat
 				line=l.split('\t')
 				if i==clips_insertion:
 					total.append([line[0],line[1],str(int(line[1])+1),"INS",line[4],i])
-				elif i==split_duplication:
-					total.append([line[0],line[1],str(int(line[1])+1),"DUP",line[3],i])
 				else:
 					total.append([line[0],line[1],str(int(line[1])+1),"INS","-",i])
 	total_sorted=sorted(total,key=lambda x: (x[0], int(x[1]),int(x[2])))

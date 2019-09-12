@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 import subprocess,sys,os
 
-def spliced_alignment(chromosome,bam,genome,fold):
+def spliced_alignment(chromosome,bam,genome,coverage):
+	fold=int(round(float(coverage)/10))
 	path=os.getcwd()
 	os.chdir(chromosome+"_dir")
 	devnull=open(os.devnull, 'w')

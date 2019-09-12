@@ -42,7 +42,7 @@ def insert_size(bam,chr1):
 	mean,sd=stddev(size)
 	min_insert_size=max(int(mean-200),int(mean-int(sd)))
 	max_insert_size=min(int(mean+300),int(mean+int(sd)))
-	return min_insert_size,max_insert_size,int(length),fold
+	return min_insert_size,max_insert_size,int(length),coverage
 	
 if __name__=="__main__":
 	min_insert_size,max_insert_size,length,coverage=insert_size(sys.argv[1],sys.argv[2])

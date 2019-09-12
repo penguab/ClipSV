@@ -1,12 +1,12 @@
 #!/usr/bin/env python	
 import sys,re
 	
-def combine_SV(clips_filter_SV,overlapping_filter_SV,indel_filter_SV,out_name):
+def combine_SV(clips_filter_SV,overlapping_filter_SV,indel_filter_SV,duplication_SV,out_name):
 	out_deletion=open(out_name+'.deletion','w')	
 	out_insertion=open(out_name+'.insertion','w')
 	total=[]
 	info={}
-	for i in [clips_filter_SV,overlapping_filter_SV,indel_filter_SV]:
+	for i in [clips_filter_SV,overlapping_filter_SV,indel_filter_SV,duplication_SV]:
 		with open(i) as f:
 			while True:
 				l=f.readline().rstrip()

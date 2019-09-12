@@ -2,7 +2,8 @@
 import sys,re
 	
 def merge_split_duplication(duplication,fold):	
-	out_file=open(duplication+".merge","w")
+	SV_out_file=open(duplication+".merge.SV","w")
+	INDEL_out_file=open(duplication+".merge.INDEL","w")
 	def comp(para1,para2):
 		line=para1.split('\t')
 		inside,overlap=0,0
@@ -24,8 +25,11 @@ def merge_split_duplication(duplication,fold):
 		elif inside==0 and overlap==0:
 			for x in range(len(para2)):
 				out=para2[x].split('\t')
-				if int(out[6])>=fold*2:
-					out_file.write("\t".join([out[0],out[1],out[2],str(int(out[2])-int(out[1]))])+"\t"+"\t".join(out[3:len(out)])+"\n")
+				if int(out[6])>=int(fold)*2:
+					if int(out[2])-int(out[1])>=50:
+						SV_out_file.write("\t".join([out[0],out[1],str(int(out[1])+1),"INS",str(int(out[2])-int(out[1]))])+"\n")
+					else:
+						INDEL_out_file.write("\t".join([out[0],out[1],str(int(out[1])+1),"INS",str(int(out[2])-int(out[1]))])+"\n")
 			para2=[para1]
 		return para2
 	
@@ -52,12 +56,18 @@ def merge_split_duplication(duplication,fold):
 	
 	for x in range(len(left)):
 		out=left[x].split('\t')
-		if int(out[6])>=fold*2:
-			out_file.write("\t".join([out[0],out[1],out[2],str(int(out[2])-int(out[1]))])+"\t"+"\t".join(out[3:len(out)])+"\n")
+		if int(out[6])>=int(fold)*2:
+			if int(out[2])-int(out[1])>=50:
+				SV_out_file.write("\t".join([out[0],out[1],str(int(out[1])+1),"INS",str(int(out[2])-int(out[1]))])+"\n")
+			else:
+				INDEL_out_file.write("\t".join([out[0],out[1],str(int(out[1])+1),"INS",str(int(out[2])-int(out[1]))])+"\n")
 	for x in range(len(right)):
 		out=right[x].split('\t')
-		if int(out[6])>=fold*2:
-			out_file.write("\t".join([out[0],out[1],out[2],str(int(out[2])-int(out[1]))])+"\t"+"\t".join(out[3:len(out)])+"\n")
+		if int(out[6])>=int(fold)*2:
+			if int(out[2])-int(out[1])>=50:
+				SV_out_file.write("\t".join([out[0],out[1],str(int(out[1])+1),"INS",str(int(out[2])-int(out[1]))])+"\n")
+			else:
+				INDEL_out_file.write("\t".join([out[0],out[1],str(int(out[1])+1),"INS",str(int(out[2])-int(out[1]))])+"\n")
 
 if __name__=="__main__":
 	merge_split_duplication(sys.argv[1],sys.argv[2])

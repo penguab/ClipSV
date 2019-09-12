@@ -9,17 +9,11 @@ def large_insertion_sort(large_insertion):
 			l=f.readline().rstrip()
 			if not l: break
 			line=l.split('\t')
-			if int(line[9])<20:
-				continue
-			'''
-			if line[4].split(":")[1]=="NA":
+			if int(line[9])<50:
 				continue
 			base=line[16].split(':')
-			if base[0]=='-' or base[1]=='-':
+			if base[0]!='-' and line[16]!="NA" and (float(base[0])<0.8 or float(base[1])<0.8):
 				continue
-			if float(base[0])<0.5 or float(base[1])<0.5:
-				continue
-			'''
 			line[2]=str(int(line[1])+1)
 			total.append(line)
 	total_sorted=sorted(total,key=lambda x: (x[0], int(x[1])))

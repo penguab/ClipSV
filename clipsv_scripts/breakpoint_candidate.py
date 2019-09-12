@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 import subprocess,sys,os
 
-def breakpoint_candidate(chromosome,bam,genome,fold,min_insert_size,max_insert_size,read_length):
+def breakpoint_candidate(chromosome,bam,genome_fa,genome_mmi,coverage,min_insert_size,max_insert_size,read_length):
+	fold=int(round(float(coverage)/10))
 	root_path=os.getcwd()
 	os.chdir(chromosome+"_dir")
 	path=os.getcwd()
@@ -10,10 +11,15 @@ def breakpoint_candidate(chromosome,bam,genome,fold,min_insert_size,max_insert_s
 	overlapping=chromosome+"_clips_overlapping"
 	from breakpoint_candidate_scripts.indel_filter import indel_filter
 	indel_filter(indel,int(fold))
+	split=chromosome+"_split"
+	from breakpoint_candidate_scripts.split_duplication import split_duplication
+	split_duplication(split)
+	from breakpoint_candidate_scripts.merge_split_duplication import merge_split_duplication
+	merge_split_duplication(split+".duplication",int(fold))
 	from breakpoint_candidate_scripts.combine_SV import combine_SV
-	combine_SV(clips+".filter.SV",overlapping+".filter.SV",indel+".filter.SV","combined_SV")
+	combine_SV(clips+".filter.SV",overlapping+".filter.SV",indel+".filter.SV",split+".duplication.merge.SV","combined_SV")
 	from breakpoint_candidate_scripts.combine_indel import combine_indel
-	combine_indel(clips+".filter.INDEL",overlapping+".filter.INDEL",indel+".filter.INDEL","combined_INDEL")
+	combine_indel(clips+".filter.INDEL",overlapping+".filter.INDEL",indel+".filter.INDEL",split+".duplication.merge.INDEL","combined_INDEL")
 	from breakpoint_candidate_scripts.remove_redundancy import remove_redundancy
 	remove_redundancy("combined_INDEL")
 	remove_redundancy("combined_SV.deletion")
@@ -29,11 +35,6 @@ def breakpoint_candidate(chromosome,bam,genome,fold,min_insert_size,max_insert_s
 	breakpoint_outINDEL(breakpoint+".sort.merge.filter","combined_INDEL",breakpoint+".outINDEL")
 	from breakpoint_candidate_scripts.merge_bed import merge_bed
 	merge_bed(breakpoint+".outINDEL")
-	from breakpoint_candidate_scripts.split_duplication import split_duplication
-	split=chromosome+"_split"
-	split_duplication(split)
-	from breakpoint_candidate_scripts.merge_split_duplication import merge_split_duplication
-	merge_split_duplication(split+".duplication",int(fold))
 	from breakpoint_candidate_scripts.split_inversion import split_inversion
 	split_inversion(split)
 	from breakpoint_candidate_scripts.merge_split_inversion import merge_split_inversion
@@ -59,9 +60,11 @@ def breakpoint_candidate(chromosome,bam,genome,fold,min_insert_size,max_insert_s
 	large_insertion_sort(large_insertion)
 	merge_large_insertion(large_insertion+".sort",int(fold))
 	breakpoint_outINDEL(chromosome+"_large_insertion.sort.merge","inversion_translocation.breakpoint","large_insertion.outInvTrans")
+	breakpoint_outINDEL("large_insertion.outInvTrans","combined_SV.insertion.unique","large_insertion.outInvTrans.outInsertion")
 	breakpoint_outINDEL(chromosome+"_translocation.sort.merge","inversion_translocation.breakpoint","translocation.outInvTrans")
+	breakpoint_outINDEL("translocation.outInvTrans","combined_SV.insertion.unique","translocation.outInvTrans.outInsertion")
 	from breakpoint_candidate_scripts.insertion_total import insertion_total
-	insertion_total("combined_SV.insertion.unique",split+".duplication.merge","large_insertion.outInvTrans","translocation.outInvTrans")
+	insertion_total("combined_SV.insertion.unique","large_insertion.outInvTrans.outInsertion","translocation.outInvTrans.outInsertion")
 	breakpoint_outINDEL("insertion_total","combined_INDEL","insertion_total.outINDEL")
 	breakpoint_outINDEL(breakpoint+".outINDEL.merge","inversion_translocation.breakpoint",breakpoint+".outINDEL.merge.outInvTrans")
 	breakpoint_outINDEL(breakpoint+".outINDEL.merge.outInvTrans","insertion_total.outINDEL",breakpoint+".outINDEL.merge.outINS")
@@ -75,7 +78,7 @@ def breakpoint_candidate(chromosome,bam,genome,fold,min_insert_size,max_insert_s
 	from breakpoint_candidate_scripts.contig_pool import contig_pool
 	contig_pool(path)
 	devnull=open(os.devnull, 'w')
-	contig_command=subprocess.Popen(['minimap2','-a',genome,'contig_all.fa'], stdout=subprocess.PIPE,stderr=devnull)
+	contig_command=subprocess.Popen(['minimap2','-a',genome_mmi,'contig_all.fa'], stdout=subprocess.PIPE,stderr=devnull)
 	contig_command_out_file=open("contig_all.minimap.splice.sam",'w')
 	contig_command_out_file.write(contig_command.stdout.read().decode('utf-8'))	
 	contig_command_out_file.close()
@@ -83,6 +86,14 @@ def breakpoint_candidate(chromosome,bam,genome,fold,min_insert_size,max_insert_s
 	event_sv("contig_all.minimap.splice.sam")
 	from breakpoint_candidate_scripts.event_sv_INS import event_sv_INS
 	event_sv_INS("contig_all.minimap.splice.sam.sv")
+	from breakpoint_candidate_scripts.high_coverage import high_coverage
+	high_coverage(chromosome,coverage)
+	from breakpoint_candidate_scripts.Masked_genome import Masked_genome
+	Masked_genome(genome_fa,chromosome)
+	from breakpoint_candidate_scripts.bed import bed
+	bed(chromosome)
+	breakpoint_outINDEL("Candidate_SV.bed","blacklist.bed","Candidate_SV.outBlacklist.bed")
+	breakpoint_outINDEL("Candidate_INDEL.bed","blacklist.bed","Candidate_INDEL.outBlacklist.bed")
 	from breakpoint_candidate_scripts.vcf import vcf
 	vcf(chromosome)
 	from breakpoint_candidate_scripts.genotype import genotype
@@ -90,6 +101,6 @@ def breakpoint_candidate(chromosome,bam,genome,fold,min_insert_size,max_insert_s
 	os.chdir(root_path)
 
 if __name__ == "__main__":
-	chromosome,bam,genome=sys.argv[1:]
-	breakpoint_candidate(chromosome,bam,genome)
+	chromosome,bam,genome_fa=sys.argv[1:]
+	breakpoint_candidate(chromosome,bam,genome_fa)
 

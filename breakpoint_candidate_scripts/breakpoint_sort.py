@@ -12,7 +12,7 @@ def breakpoint_sort(breakpoint):
 			content=line[-8].split(":")
 			if content[0] != "-" and (float(content[0])<0.8 or float(content[1])<0.8):
 				continue
-			if int(line[9])<20:
+			if int(line[9])<50:
 				continue
 			total.append(line)
 	total_sort=sorted(total,key=lambda x: (x[0], int(x[1])))

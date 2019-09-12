@@ -27,14 +27,7 @@ def merge_large_insertion(large_insertion,fold):
 			l= f.readline().rstrip()
 			if not l: break
 			line= l.split('\t')
-			if int(line[9])<20:
-				continue
 			if line[4].split(":")[1]=="NA":
-				continue
-			base=line[16].split(':')
-			if base[0]=='-' or base[1]=='-':
-				continue
-			if float(base[0])<0.5 or float(base[1])<0.5:
 				continue
 			direction=line[4].split(':')[1]
 			if direction=='left':

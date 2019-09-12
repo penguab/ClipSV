@@ -1,11 +1,11 @@
 #!/usr/bin/env python	
 import sys,re
 	
-def combine_indel(clips_filter_indel,overlapping_filter_indel,indel_filter,out_name):
+def combine_indel(clips_filter_indel,overlapping_filter_indel,indel_filter,duplication_INDEL,out_name):
 	out_file=open(out_name,'w')	
 	total=[]
 	info={}
-	for i in [clips_filter_indel,overlapping_filter_indel,indel_filter]:
+	for i in [clips_filter_indel,overlapping_filter_indel,indel_filter,duplication_INDEL]:
 		with open(i) as f:
 			while True:
 				l=f.readline().rstrip()

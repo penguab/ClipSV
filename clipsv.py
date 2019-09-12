@@ -3,7 +3,7 @@ import subprocess,sys,re,getopt,os,warnings
 import multiprocessing as mp
 
 def usage():
-	sys.exit('\nUsage:\nexport PATH=$PATH:ClipSV_install_directory/\nclipsv.py -b <bam file> -g <genome.mmi>\n')
+	sys.exit('\nUsage:\nexport PATH=$PATH:ClipSV_install_directory/\nclipsv.py -b <bam file> -g <genome.fa>\n')
 
 if sys.version_info[0] < 3:
 	print('\nPlease Use Python3 !!\n')
@@ -15,14 +15,14 @@ except getopt.GetoptError as err:
 	print(err)
 	usage()
 
-bam,genome='',''
+bam,genome_fa='',''
 if not opts:
 	usage()
 for o, a in opts:
 	if o =="-b":
 		bam=os.path.abspath(a)
 	elif o =="-g":
-		genome=os.path.abspath(a)
+		genome_fa=os.path.abspath(a)
 	elif o =="-d":
 		depth=int(a)
 	elif o in ("-h","--help"):
@@ -30,22 +30,29 @@ for o, a in opts:
 
 if not bam:
 	usage()
-if not genome:
+if not genome_fa:
 	usage()
+
+
+genome_m=re.search(r'^(.*)\.(fa|fasta)$',genome_fa)
+if not genome_m:
+	usage()
+else:
+	genome_mmi=genome_m.group(1)+'.mmi'
 
 from clipsv_scripts.header import header
 chromosomes=header(bam)
 
 from clipsv_scripts.insert_size import insert_size
-min_insert_size,max_insert_size,read_length,fold=insert_size(bam,chromosomes[0])
+min_insert_size,max_insert_size,read_length,coverage=insert_size(bam,chromosomes[0])
 
 try:
-	fold=depth
+	coverage=depth
 except NameError:
 	pass
 
 from clipsv_scripts.extract_breakpoints import extract_breakpoints
-processes_1 = [mp.Process(target=extract_breakpoints, args=(x,bam,genome,min_insert_size,max_insert_size,read_length)) for x in chromosomes]
+processes_1 = [mp.Process(target=extract_breakpoints, args=(x,bam,genome_mmi,min_insert_size,max_insert_size,read_length)) for x in chromosomes]
 for p1 in processes_1:
 	p1.start()
 for p1 in processes_1:
@@ -53,10 +60,10 @@ for p1 in processes_1:
 
 from clipsv_scripts.spliced_alignment import spliced_alignment
 for x in chromosomes:
-	spliced_alignment(x,bam,genome,fold)
+	spliced_alignment(x,bam,genome_mmi,coverage)
 
 from clipsv_scripts.breakpoint_candidate import breakpoint_candidate
-processes_2 = [mp.Process(target=breakpoint_candidate, args=(x,bam,genome,fold,min_insert_size,max_insert_size,read_length)) for x in chromosomes]
+processes_2 = [mp.Process(target=breakpoint_candidate, args=(x,bam,genome_fa,genome_mmi,coverage,min_insert_size,max_insert_size,read_length)) for x in chromosomes]
 for p2 in processes_2:
         p2.start()
 for p2 in processes_2:
