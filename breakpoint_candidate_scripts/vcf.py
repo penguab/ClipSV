@@ -12,15 +12,15 @@ def vcf(chromosome):
 		if not l: break
 		line=l.split('\t')
 		if line[3]=="DEL":
-			SV_out.write(line[0]+"\t"+line[1]+"\t.\t.\t.\t.\t.\t"+"SVTYPE=DEL;SVLEN="+line[4]+"\tGT\n")
+			SV_out.write(line[0]+"\t"+line[1]+"\t.\tN\t<DEL>\t.\t.\t"+"SVTYPE=DEL;SVLEN="+line[4]+"\tGT\n")
 		elif line[3]=="INS":
-			SV_out.write(line[0]+"\t"+line[1]+"\t.\t.\t.\t.\t.\t"+"SVTYPE=INS;SVLEN="+line[4]+"\tGT\n")
+			SV_out.write(line[0]+"\t"+line[1]+"\t.\tN\t<INS>\t.\t.\t"+"SVTYPE=INS;SVLEN="+line[4]+"\tGT\n")
 		elif line[3]=="DUP":
-			SV_out.write(line[0]+"\t"+line[1]+"\tDUP\t.\t.\t.\t.\t"+"SVTYPE=INS;SVLEN="+line[4]+"\tGT\n")
+			SV_out.write(line[0]+"\t"+line[1]+"\t.\tN\t<DUP>\t.\t.\t"+"SVTYPE=DUP;SVLEN="+line[4]+"\tGT\n")
 		elif line[3]=="INV":
-			SV_out.write(line[0]+"\t"+line[1]+"\t.\t.\t.\t.\t.\t"+"SVTYPE=INV;SVLEN="+line[4]+"\tGT\n")
+			SV_out.write(line[0]+"\t"+line[1]+"\t.\tN\t<INV>\t.\t.\t"+"SVTYPE=INV;SVLEN="+line[4]+"\tGT\n")
 		elif line[3]=="TRANS":
-			SV_out.write(line[0]+"\t"+line[1]+"\t.\t.\t"+line[4]+"\t.\t.\t"+"SVTYPE=TRANS;SVLEN=-"+"\tGT\n")
+			SV_out.write(line[0]+"\t"+line[1]+"\t.\tN\t<TRANS>\t.\t.\t"+"SVTYPE=TRANS;SVLEN=-;BREAKPOINT="+line[4]+"\tGT\n")
 	f1.close()
 	f2=open("Candidate_INDEL.outBlacklist.bed",'r')
 	while True:
@@ -28,9 +28,9 @@ def vcf(chromosome):
 		if not l: break
 		line=l.split("\t")
 		if line[3]=="DEL":
-			INDEL_out.write(line[0]+"\t"+line[1]+"\t.\t.\t.\t.\t.\t"+"TYPE=DEL;LEN="+line[4]+"\tGT\n")
+			INDEL_out.write(line[0]+"\t"+line[1]+"\t.\tN\t<DEL>\t.\t.\t"+"TYPE=DEL;LEN="+line[4]+"\tGT\n")
 		elif line[3]=="INS":
-			INDEL_out.write(line[0]+"\t"+line[1]+"\t.\t.\t.\t.\t.\t"+"TYPE=INS;LEN="+line[4]+"\tGT\n")
+			INDEL_out.write(line[0]+"\t"+line[1]+"\t.\tN\t<INS>\t.\t.\t"+"TYPE=INS;LEN="+line[4]+"\tGT\n")
 	f2.close()
 
 if __name__=="__main__":

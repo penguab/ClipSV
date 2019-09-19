@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import subprocess,sys,os
+import subprocess,sys,os,shutil
 
 def breakpoint_candidate(chromosome,bam,genome_fa,genome_mmi,coverage,min_insert_size,max_insert_size,read_length):
 	fold=int(round(float(coverage)/10))
@@ -98,6 +98,7 @@ def breakpoint_candidate(chromosome,bam,genome_fa,genome_mmi,coverage,min_insert
 	vcf(chromosome)
 	from breakpoint_candidate_scripts.genotype import genotype
 	genotype("Candidate_SV.vcf",bam,min_insert_size,max_insert_size)
+	shutil.rmtree("assembly")
 	os.chdir(root_path)
 
 if __name__ == "__main__":

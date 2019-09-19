@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import subprocess,sys,os
 
-def spliced_alignment(chromosome,bam,genome,coverage):
+def spliced_alignment(chromosome,bam,genome,coverage,threads):
 	fold=int(round(float(coverage)/10))
 	path=os.getcwd()
 	os.chdir(chromosome+"_dir")
@@ -14,7 +14,7 @@ def spliced_alignment(chromosome,bam,genome,coverage):
 	samtools_fastq_file=open(samtools_fastq,'w')
 	samtools_fastq_file.write(samtools_fastq_command.stdout.read().decode('utf-8'))
 	samtools_fastq_file.close()
-	minimap2_command=subprocess.Popen(['minimap2','-ax','splice',genome,samtools_fastq], stdout=subprocess.PIPE,stderr=devnull)
+	minimap2_command=subprocess.Popen(['minimap2','-ax','splice','-t',threads,genome,samtools_fastq], stdout=subprocess.PIPE,stderr=devnull)
 	minimap2_out_file=open(samtools_fastq+".minimap2",'w')
 	minimap2_out_file.write(minimap2_command.stdout.read().decode('utf-8'))
 	minimap2_out_file.close()
@@ -25,7 +25,7 @@ def spliced_alignment(chromosome,bam,genome,coverage):
 	from breakpoint_candidate_scripts.remove_redundancy import remove_redundancy
 	from breakpoint_candidate_scripts.reads_overlapping import reads_overlapping
 	reads_overlapping(clips)
-	minimap2_overlapping=subprocess.Popen(['minimap2','-ax','splice',genome,clips+"_overlapping"], stdout=subprocess.PIPE,stderr=devnull)
+	minimap2_overlapping=subprocess.Popen(['minimap2','-ax','splice','-t',threads,genome,clips+"_overlapping"], stdout=subprocess.PIPE,stderr=devnull)
 	minimap2_overlapping_out=open(clips+"_overlapping"+".minimap2",'w')
 	minimap2_overlapping_out.write(minimap2_overlapping.stdout.read().decode('utf-8'))
 	minimap2_overlapping_out.close()
