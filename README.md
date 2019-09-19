@@ -48,7 +48,7 @@ clipsv.py -b <bam/cram file> -g <genome.fa> [-dtphv]
 
 ----Optional---
 -t Threads (default: 3)
--d Sequencing depth (default: automattically determined)
+-d Sequencing depth (default: automatically determined)
 -p Prefix (default: ClipSV_out)
 -v Version
 -h Help
