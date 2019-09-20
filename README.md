@@ -10,7 +10,7 @@ Draft date: June. 4, 2019
 
 ## Description
 
-ClipSV was developed to detect structural variations by read extension, spliced alignment and local assembly. It primarily depends on clipped reads from short-read sequencing platform. ClipSV was optimized to discover INDELS (2bp-50bp) and structural variations (>=50bp) in human genomes.
+ClipSV was developed to detect structural variations by read extension, spliced alignment and local assembly. It primarily depends on clipped reads from short-read sequencing platform. ClipSV was optimized to discover INDELS (5bp-50bp) and structural variations (>=50bp) in human genomes.
 
 ## System requirements and dependency
 
