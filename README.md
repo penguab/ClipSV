@@ -4,7 +4,7 @@ A software to detect structural variations in human genomes by read extension, s
 
 Author: Peng Xu
 
-Email: pxu@uabmc.edu
+Email: peng.xu@mssm.edu
 
 Draft date: June. 4, 2019
 
