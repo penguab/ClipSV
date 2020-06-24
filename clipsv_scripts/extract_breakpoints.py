@@ -108,7 +108,7 @@ def extract_breakpoints(chromosome,bam, genome, min_insert_size, max_insert_size
 			direction='left'
 			if SA and SA.group(1)==line[2]:
 				SA_pos=cigar_pos(SA.group(2),SA.group(3),match_p)
-				if int(line[1])%16 <8 and line[6]=='=' and int(pos)<int(SA.group(2)) :
+				if int(line[1])%16 <8 and line[6]=='=' and int(pos)<int(SA.group(2)) and mc!='NA':
 					MC_pos=cigar_pos(line[7],MC.group(1),match_p)
 					if not (int(MC_pos)-int(line[3])<int(read_length)-int(min_insert_size)/2 or int(SA_pos)-int(line[7])<int(read_length)-int(min_insert_size)/2):
 						continue
@@ -124,7 +124,7 @@ def extract_breakpoints(chromosome,bam, genome, min_insert_size, max_insert_size
 			direction='right'
 			if SA and SA.group(1)==line[2]:
 				SA_pos=cigar_pos(SA.group(2),SA.group(3),match_p)
-				if int(line[1])%16 <8 and line[6]=='=' and int(SA_pos)<int(line[3]) :
+				if int(line[1])%16 <8 and line[6]=='=' and int(SA_pos)<int(line[3]) and mc!='NA':
 					MC_pos=cigar_pos(line[7],MC.group(1),match_p)
 					if not (int(MC_pos)-int(SA.group(2))<int(read_length)-int(min_insert_size)/2 or int(pos)-int(line[7])<int(read_length)-int(min_insert_size)/2):
 						continue

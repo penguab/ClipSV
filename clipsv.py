@@ -15,7 +15,7 @@ except getopt.GetoptError as err:
 	print(err)
 	usage()
 
-bam,genome_fa,prefix='','','ClipSV_out'
+bam,genome_fa,prefix,threads='','','ClipSV_out',12
 if not opts:
 	usage()
 for o, a in opts:
