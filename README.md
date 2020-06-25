@@ -47,7 +47,7 @@ clipsv.py -b <bam/cram file> -g <genome.fa> [-dtphv]
 -g Fasta file of genome sequence (Should be indexed by Minimap2 "minimap2 -d genome.mmi genome.fa")
 
 ----Optional---
--t Threads (default: 3)
+-t Threads (default: 12)
 -d Sequencing depth (default: automatically determined)
 -p Prefix (default: ClipSV_out)
 -v Version

@@ -61,7 +61,8 @@ def extract_breakpoints(chromosome,bam, genome, min_insert_size, max_insert_size
 		if MC:
 			mc=MC.group(0)
 		else:
-			mc='NA'
+			#mc='NA'
+			continue
 		SA=SA_p.search(l)
 		if SA:
 			sa=SA.group(0)

@@ -3,7 +3,7 @@ import subprocess,sys,re,getopt,os,warnings
 import multiprocessing as mp
 
 def usage():
-	sys.exit('\nUsage:\n\nsource activate python3\nexport PATH=$PATH:ClipSV_install_directory/\n\nclipsv.py -b <bam/cram file> -g <genome.fa> [-dtphv]\n\n-b Indexed bam/cram file\n-g Fasta file of genome sequence (Should be indexed by Minimap2 "minimap2 -d genome.mmi genome.fa")\n\n----Optional---\n-t Threads (default: 3)\n-d Sequencing depth (default: automattically determined)\n-p Prefix (default: ClipSV_out)\n-v Version\n-h Help\n\n')
+	sys.exit('\nUsage:\n\nsource activate python3\nexport PATH=$PATH:ClipSV_install_directory/\n\nclipsv.py -b <bam/cram file> -g <genome.fa> [-dtphv]\n\n-b Indexed bam/cram file\n-g Fasta file of genome sequence (Should be indexed by Minimap2 "minimap2 -d genome.mmi genome.fa")\n\n----Optional---\n-t Threads (default: 12)\n-d Sequencing depth (default: automattically determined)\n-p Prefix (default: ClipSV_out)\n-v Version\n-h Help\n\n')
 
 if sys.version_info[0] < 3:
 	print('\nPlease Use Python3 !!\n')
@@ -15,7 +15,7 @@ except getopt.GetoptError as err:
 	print(err)
 	usage()
 
-bam,genome_fa,prefix,threads='','','ClipSV_out',12
+bam,genome_fa,prefix,threads='','','ClipSV_out',"12"
 if not opts:
 	usage()
 for o, a in opts:
@@ -71,7 +71,7 @@ for p1 in processes_1:
 
 from clipsv_scripts.spliced_alignment import spliced_alignment
 for x in chromosomes:
-	spliced_alignment(x,bam,genome_mmi,coverage,threads)
+	spliced_alignment(x,bam,genome_mmi,coverage,str(threads))
 
 from clipsv_scripts.breakpoint_candidate import breakpoint_candidate
 processes_2 = [mp.Process(target=breakpoint_candidate, args=(x,bam,genome_fa,genome_mmi,coverage,min_insert_size,max_insert_size,read_length)) for x in chromosomes]
