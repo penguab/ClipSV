@@ -31,7 +31,10 @@ export PATH=$PWD/ClipSV/:$PATH
 
 ## Usage
 
-ClipSV needs two files as inputs. The first is an indexed bam/cram file from whole genome sequencing. The second is the genome reference indexed by minimap2 (To generate index file, use command "minimap2 -d genome.mmi genome.fa").
+ClipSV needs two files as inputs. The first is an indexed bam/cram file from whole genome sequencing. The second is the genome reference indexed by minimap2 (To generate index file, use command "minimap2 -d genome.mmi genome.fa"). 
+
+For human studies, the latest genome with decoy and HLA cotigs is recommended: ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/technical/reference/GRCh38_reference_genome/GRCh38_full_analysis_set_plus_decoy_hla.fa.
+
 Quick start:
 ```
 source activate python3
