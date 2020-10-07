@@ -62,6 +62,9 @@ try:
 except NameError:
 	pass
 
+if int(coverage) < 20 :
+	coverage = 20
+
 from clipsv_scripts.extract_breakpoints import extract_breakpoints
 processes_1 = [mp.Process(target=extract_breakpoints, args=(x,bam,genome_mmi,min_insert_size,max_insert_size,read_length)) for x in chromosomes]
 for p1 in processes_1:
