@@ -4,7 +4,7 @@ A software to detect structural variations in human genomes by read extension, s
 
 Author: Peng Xu
 
-Email: pxu@uabmc.edu
+Email: peng.xu@mssm.edu
 
 Draft date: June. 4, 2019
 
@@ -31,7 +31,10 @@ export PATH=$PWD/ClipSV/:$PATH
 
 ## Usage
 
-ClipSV needs two files as inputs. The first is an indexed bam/cram file from whole genome sequencing. The second is the genome reference indexed by minimap2 (To generate index file, use command "minimap2 -d genome.mmi genome.fa").
+ClipSV needs two files as inputs. The first is an indexed bam/cram file from whole genome sequencing. The second is the genome reference indexed by minimap2 (To generate index file, use command "minimap2 -d genome.mmi genome.fa"). 
+
+For human studies, the latest genome with decoy and HLA cotigs is recommended: ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/technical/reference/GRCh38_reference_genome/GRCh38_full_analysis_set_plus_decoy_hla.fa.
+
 Quick start:
 ```
 source activate python3
@@ -47,7 +50,7 @@ clipsv.py -b <bam/cram file> -g <genome.fa> [-dtphv]
 -g Fasta file of genome sequence (Should be indexed by Minimap2 "minimap2 -d genome.mmi genome.fa")
 
 ----Optional---
--t Threads (default: 3)
+-t Threads (default: 12)
 -d Sequencing depth (default: automatically determined)
 -p Prefix (default: ClipSV_out)
 -v Version

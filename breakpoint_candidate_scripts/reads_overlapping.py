@@ -65,3 +65,9 @@ def reads_overlapping(candidate_clips):
 					pre_chrom=line[2]
 					pre_end=int(pos)
 					array=[line[9]]
+
+if __name__ == "__main__":
+	candidate_clips=sys.argv[1]
+	reads_overlapping(candidate_clips)
+
+
