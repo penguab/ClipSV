@@ -8,7 +8,7 @@ Email: peng.xu@mssm.edu
 
 Draft date: June. 4, 2019
 
-Please cite: Xu, P., Chen, Y., Gao, M., and Chong, Z. (2021). ClipSV: improving structural variation detection by read extension, spliced alignment and tree-based decision rules. NAR Genom Bioinform 3, lqab003.
+To cite: Xu, P., Chen, Y., Gao, M., and Chong, Z. (2021). ClipSV: improving structural variation detection by read extension, spliced alignment and tree-based decision rules. NAR Genom Bioinform 3, lqab003.
 
 ## Description
 
