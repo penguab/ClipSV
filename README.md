@@ -8,6 +8,8 @@ Email: peng.xu@mssm.edu
 
 Draft date: June. 4, 2019
 
+Please cite: Xu, P., Chen, Y., Gao, M., and Chong, Z. (2021). ClipSV: improving structural variation detection by read extension, spliced alignment and tree-based decision rules. NAR Genom Bioinform 3, lqab003.
+
 ## Description
 
 ClipSV was developed to detect structural variations by read extension, spliced alignment and local assembly. It primarily depends on clipped reads from short-read sequencing platform. ClipSV was optimized to discover INDELS (5bp-50bp) and structural variations (>=50bp) in human genomes.
